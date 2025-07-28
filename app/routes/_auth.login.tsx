@@ -1,0 +1,96 @@
+"use client"
+
+import z from "zod";
+import { Button } from "../components/ui/button"
+import {
+    Card,
+    CardContent,
+    CardFooter,
+    CardHeader,
+    CardTitle,
+} from "../components/ui/card"
+import { useNavigate } from "react-router-dom";
+import { useForm } from "react-hook-form";
+import { Form } from "../components/ui/form"
+import { zodResolver } from "@hookform/resolvers/zod";
+import EmailField from "~/AppComponents/FormFields/EmailField";
+import PasswordField from "~/AppComponents/FormFields/PasswordField";
+import { loginUser } from "~/Services/authService";
+
+const FormSchema = z.object({
+    email: z.email({
+        message: "Please enter a valid email address"
+    }).min(5, { message: "Email must be at least 5 characters." })
+        .max(50, "Email cannot exceed 50 characters."),
+
+    password: z.string().min(8, "Password must be at least 8 characters long")
+        .regex(
+            /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[!@#$%^&*])/,
+            "Password must include uppercase, lowercase, number, and special character"
+        ),
+});
+
+export default function Login() {
+    const navigate = useNavigate();
+    async function onSubmit(data: z.infer<typeof FormSchema>) {
+        try {
+            const userCredential = await loginUser(data.email, data.password);
+            console.log("Logged in user:", userCredential.user);
+            navigate("/dashboard");
+        } catch (error: any) {
+            form.setError("email", { message: "Invalid email or password" });
+            form.setError("password", { message: " " });
+        }
+    }
+
+    const form = useForm<z.infer<typeof FormSchema>>({
+        resolver: zodResolver(FormSchema),
+        defaultValues: {
+            email: "",
+            password: "",
+        }
+    })
+
+    return (
+        <div className="flex h-screen w-screen justify-center items-center">
+            <Card className="w-full max-w-sm">
+                <CardHeader className="flex justify-center text-xl">
+                    <CardTitle>Login to your account</CardTitle>
+                </CardHeader>
+                <CardContent>
+                    <Form {...form}>
+                        <form onSubmit={form.handleSubmit(onSubmit)}>
+                            <div className="flex flex-col gap-6">
+                                <div className="grid gap-2">
+                                    <EmailField control={form.control} email="email" />
+                                </div>
+                                <div className="grid gap-2">
+                                    <PasswordField control={form.control} Password="password" />
+                                    <a
+                                        href="#"
+                                        className="ml-auto inline-block text-sm underline-offset-4 hover:underline"
+                                    >
+                                        Forgot your password?
+                                    </a>
+                                </div>
+                                <Button type="submit" className="w-full bg-blue-700 hover:bg-green-500">
+                                    Login
+                                </Button>
+                            </div>
+                        </form>
+                    </Form>
+                </CardContent>
+                <CardFooter className="flex-col gap-2">
+                    <Button onClick={(e) => {
+                        e.preventDefault();
+                        navigate("/signup");
+                    }} className="w-full bg-blue-700 hover:bg-green-500">
+                        Create your Account
+                    </Button>
+                </CardFooter>
+            </Card>
+        </div>
+
+    )
+}
+
