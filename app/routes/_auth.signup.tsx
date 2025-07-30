@@ -18,10 +18,11 @@ import PasswordField from "~/AppComponents/FormFields/PasswordField";
 import { useState } from "react";
 import { signupUser } from "~/Services/authService";
 import NameField from "~/AppComponents/FormFields/NameField";
+import { Spinner } from "../components/ui/spinner";
 
 const FormSchema = z.object({
   Username: z.string(
-    {message: "Enter name"}
+    { message: "Enter name" }
   ),
   email: z.string().email({
     message: "Please enter a valid email address"
@@ -41,6 +42,7 @@ const FormSchema = z.object({
 export default function Signup() {
   const navigate = useNavigate();
   const [error, setError] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
 
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
@@ -53,11 +55,13 @@ export default function Signup() {
   });
 
   async function onSubmit(data: z.infer<typeof FormSchema>) {
+    setLoading(true)
     try {
-      setError(null); 
+      setError(null);
       await signupUser(data.email, data.password, data.Username);
       navigate("/login");
     } catch (err: any) {
+      setLoading(false)
       setError(err.message || "Signup failed. Try again.");
     }
   }
@@ -72,16 +76,20 @@ export default function Signup() {
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)}>
               <div className="flex flex-col gap-3">
-                <NameField control={form.control} name="Username"/>
+                <NameField control={form.control} name="Username" />
                 <EmailField control={form.control} email="email" />
                 <PasswordField control={form.control} Password="password" />
                 <PasswordField control={form.control} Password="confirmPassword" />
                 {error && <p className="text-red-500 text-sm">{error}</p>}
                 <Button
                   type="submit"
-                  className="w-full bg-blue-700 hover:bg-green-500"
+                  className="w-full bg-blue-700 hover:bg-green-500" disabled={loading}
                 >
-                  Signup
+                  {loading ? (
+                    <Spinner size="sm" className="dark:bg-white" />
+                  ) : (
+                    "Signup"
+                  )}
                 </Button>
               </div>
             </form>

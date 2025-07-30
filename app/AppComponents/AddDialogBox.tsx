@@ -19,9 +19,12 @@ import AmountField from "./FormFields/AmountField";
 import TextAreaField from "./FormFields/TextAreaField";
 import { Checkbox } from "~/components/ui/checkbox";
 import { Label } from "~/components/ui/label";
-import { useContext } from "react";
+import { useContext, useState } from "react";
 import { TaskContext } from "~/ContextFiles/TaskContext";
 import { useAPIContext } from "~/ContextFiles/UsersContext";
+import { id } from "date-fns/locale";
+import { useAuth } from "~/ContextFiles/AuthContext";
+import { Spinner } from "~/components/ui/spinner";
 
 const FormSchema = z.object({
   title: z
@@ -76,6 +79,8 @@ interface AddDialogProps {
 export function AddDialog({ onClose }: AddDialogProps) {
   const taskContext = useContext(TaskContext);
   const { users } = useAPIContext();
+  const { userId } = useAuth();
+  const [loading, setLoading] = useState(false);
 
   var categories = ["Personal", "Work", "Learning", "Others"]
   var priorities = ["Low", "High", "Medium"]
@@ -84,20 +89,19 @@ export function AddDialog({ onClose }: AddDialogProps) {
 
 
   function onSubmit(data: z.infer<typeof FormSchema>) {
-    // if (!taskContext) return;
-
     const { addTask } = taskContext!;
-
+    setLoading(true);
     const selectedUser = users.find(user => user.username === data.assignedTo);
 
-    // ✅ If user not found, stop and show error
     if (!selectedUser) {
+      setLoading(false)
       console.error("Selected user not found");
       return;
     }
 
     const newTask = {
-      id: selectedUser.uid,
+      userId: selectedUser.uid,
+      id: uuidv4(),
       ...data,
     };
 
@@ -149,7 +153,11 @@ export function AddDialog({ onClose }: AddDialogProps) {
                 <DialogClose asChild>
                   <Button variant="outline">Cancel</Button>
                 </DialogClose>
-                <Button type="submit">Save changes</Button>
+                <Button type="submit" disabled={loading}>{loading ? (
+                  <Spinner size="sm" className="dark:bg-white" />
+                ) : (
+                  "Save Changes"
+                )}</Button>
               </DialogFooter>
             </div>
 

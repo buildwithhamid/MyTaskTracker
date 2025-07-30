@@ -4,11 +4,12 @@ import {
     Card,
     CardContent,
 } from "../components/ui/card";
+import type { Timestamp } from "firebase/firestore";
 
 interface TaskCardProps {
     title: string;
     category: string;
-    dueDate: string | Date;
+    dueDate: string | Date | Timestamp;
     status: string;
     assignedTo: string;
     priority: string;
@@ -16,7 +17,6 @@ interface TaskCardProps {
     onEdit: () => void;
     onDelete: () => void;
 }
-
 
 export function TaskItemCard({
     title,
@@ -29,23 +29,41 @@ export function TaskItemCard({
     onEdit,
     onDelete,
 }: TaskCardProps) {
+
+    let formattedDate = "Invalid Date";
+
+    if (dueDate instanceof Date) {
+        console.log(dueDate)
+        formattedDate = dueDate.toLocaleDateString();
+        console.log(formattedDate)
+    } else if (typeof dueDate === "string") {
+        console.log(dueDate)
+        const parsed = new Date(dueDate);
+        formattedDate = isNaN(parsed.getTime()) ? "Invalid Date" : parsed.toLocaleDateString();
+        console.log(formattedDate)
+    } else if (typeof dueDate === "object" && "toDate" in dueDate && typeof dueDate.toDate === "function") {
+        console.log(dueDate)
+        formattedDate = dueDate.toDate().toLocaleDateString();
+        console.log(formattedDate)
+    }
+
     return (
         <Card className="w-full">
             <CardContent className="flex flex-col gap-2">
                 <div className="flex items-center gap-4">
-                    {/* Icon Thumbnail */}
+                    {/* Icon Thumbnail
                     <div className="p-2 bg-gray-100 rounded-full">
                         <ClipboardList className="h-10 w-10 text-green-600" />
-                    </div>
+                    </div> */}
 
                     {/* Task Summary */}
                     <div className="flex flex-col gap-1 flex-1">
                         <div className="text-lg font-semibold">{title}</div>
                         <div className="text-sm text-gray-500">{category}</div>
                         <div className="text-xs text-gray-500">
-                            Due: {new Date(dueDate).toLocaleDateString()}
+                            Due: {formattedDate}
                         </div>
-                        
+
                     </div>
 
                     {/* Action Buttons */}
@@ -81,8 +99,8 @@ export function TaskItemCard({
                         <span className="font-medium">Visibility:</span> {isPublic ? "Public" : "Private"}
                     </div>
                     <div className="flex items-center gap-1">
-                            <span className="font-medium">Assigned To:</span>{assignedTo}
-                        </div>
+                        <span className="font-medium">Assigned To:</span>{assignedTo}
+                    </div>
                 </div>
             </CardContent>
         </Card>

@@ -1,13 +1,15 @@
+import type { Timestamp } from "firebase/firestore";
 import React, { createContext, useEffect, useState, type ReactNode } from "react";
-import { createTask, getTasks } from "~/Services/taskService";
+import { createTask, deleteTask, getTasks, updatetask } from "~/Services/taskService";
 
 export interface TaskItem {
     id: string;
+    userId: string;
     title: string;
     description: string;
     assignedTo: string;
     category: string;
-    dueDate: Date;
+    dueDate: Date | string | Timestamp;
     priority: string;
     status: string;
     isPublic: boolean;
@@ -51,16 +53,26 @@ const TaskProvider: React.FC<TaskProviderProps> = ({ children }) => {
         }
     };
 
-    const removeTask = (id: string) => {
-        setTaskData((prev) => prev.filter(item => item.id !== id));
+    const removeTask = async (id: string) => {
+        try {
+            await deleteTask(id);
+            setTaskData((prev) => prev.filter(item => item.id !== id));
+        } catch (error) {
+            console.error("Failed to remove task:", error);
+        }
     };
 
-    const updateTask = (id: string, updatedTask: Partial<TaskItem>) => {
-        setTaskData((prev) =>
-            prev.map(item =>
-                item.id === id ? { ...item, ...updatedTask } : item
-            )
-        );
+    const updateTask = async (id: string, updatedTask: Partial<TaskItem>) => {
+        try {
+            await updatetask(id, updatedTask);
+            setTaskData((prev) =>
+                prev.map(item =>
+                    item.id === id ? { ...item, ...updatedTask } : item
+                )
+            );
+        } catch (error) {
+            console.error("Failed to update task:", error);
+        }
     };
 
     return (

@@ -16,8 +16,9 @@ import DateField from "./FormFields/DateField";
 import TextAreaField from "./FormFields/TextAreaField";
 import { Checkbox } from "~/components/ui/checkbox";
 import { Label } from "~/components/ui/label";
-import { useContext, useEffect } from "react";
+import { useContext, useEffect, useState } from "react";
 import { TaskContext, type TaskItem} from "~/ContextFiles/TaskContext";
+import { Spinner } from "~/components/ui/spinner";
 
 const FormSchema = z.object({
   title: z.string().min(3).max(50),
@@ -35,9 +36,20 @@ interface EditDialogProps {
   task: TaskItem;
 }
 
+function toDate(dueDate: string | Date | { toDate: () => Date }): Date {
+  if (dueDate instanceof Date) return dueDate;
+  if (typeof dueDate === "string") return new Date(dueDate);
+  if (typeof dueDate === "object" && typeof dueDate.toDate === "function") {
+    return dueDate.toDate(); // Firebase Timestamp
+  }
+  throw new Error("Invalid dueDate format");
+}
+
+
 export function EditDialogBox({ onClose, task }: EditDialogProps) {
   const taskContext = useContext(TaskContext)!;
   const { updateTask } = taskContext;
+  const [loading, setLoading] = useState(false);
 
   const categories = ["Personal", "Work", "Learning", "Others"];
   const priorities = ["Low", "High", "Medium"];
@@ -47,7 +59,7 @@ export function EditDialogBox({ onClose, task }: EditDialogProps) {
     resolver: zodResolver(FormSchema),
     defaultValues: {
       ...task,
-      dueDate: new Date(task.dueDate),
+      dueDate: toDate(task.dueDate),
     },
   });
 
@@ -55,11 +67,13 @@ export function EditDialogBox({ onClose, task }: EditDialogProps) {
   useEffect(() => {
     form.reset({
       ...task,
-      dueDate: new Date(task.dueDate),
+      dueDate: toDate(task.dueDate),
     });
   }, [task]);
 
   function onSubmit(data: z.infer<typeof FormSchema>) {
+    setLoading(true);
+    console.log(task.id);
     updateTask(task.id, data);
     onClose();
   }
@@ -94,7 +108,11 @@ export function EditDialogBox({ onClose, task }: EditDialogProps) {
                 <DialogClose asChild>
                   <Button variant="outline">Cancel</Button>
                 </DialogClose>
-                <Button type="submit">Save changes</Button>
+                <Button type="submit" disabled={loading}>{loading ? (
+                  <Spinner size="sm" className="dark:bg-white" />
+                ) : (
+                  "Save Changes"
+                )}</Button>
               </DialogFooter>
             </div>
           </div>

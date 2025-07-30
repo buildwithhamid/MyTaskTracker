@@ -1,12 +1,37 @@
 import { createUserWithEmailAndPassword, signOut, signInWithEmailAndPassword } from "firebase/auth";
-import type { UserCredential } from "firebase/auth";
-import { doc, setDoc, } from "firebase/firestore";
+import { collection, doc, getDoc, getDocs, setDoc, type DocumentData, } from "firebase/firestore";
 import { auth, db } from "../firebase";
+import { useAuth } from "~/ContextFiles/AuthContext";
 
-export async function loginUser(email: string, password: string): Promise<UserCredential> {
+// Login and return user data from Firestore
+// ✅ DO NOT call any hooks here
+export async function loginUser(email: string, password: string) {
   try {
     const userCredential = await signInWithEmailAndPassword(auth, email, password);
-    return userCredential;
+    const user = userCredential.user;
+
+    const docRef = doc(db, "users", user.uid);
+    const docSnap = await getDoc(docRef);
+
+    let profile = {
+      uid: user.uid,
+      email: "task-manager@admn.com",
+      username: "Admin",
+    };
+
+    if (docSnap.exists()) {
+      const userData = docSnap.data() as DocumentData;
+      profile = {
+        uid: user.uid,
+        email: userData.email,
+        username: userData.username,
+      };
+    }
+
+    return {
+      credential: userCredential,
+      profile,
+    };
   } catch (error: any) {
     console.error("Login error:", error.message);
     throw new Error(error.message);
@@ -29,6 +54,16 @@ export async function signupUser(email: string, password: string, username: stri
   } catch (error: any) {
     console.error("Signup error:", error.message);
     throw new Error(error.message);
+  }
+}
+
+export async function getCurrentUser(){
+  const { setEmail, setUserId, setUsername } = useAuth();
+  
+  try {
+    const snapshot = getDocs(collection(db, "users"))
+  } catch (error) {
+    
   }
 }
 

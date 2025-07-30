@@ -16,6 +16,10 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import EmailField from "~/AppComponents/FormFields/EmailField";
 import PasswordField from "~/AppComponents/FormFields/PasswordField";
 import { loginUser } from "~/Services/authService";
+import { useAuth } from "~/ContextFiles/AuthContext";
+import { useState } from "react";
+import React from "react";
+import { Spinner } from "../components/ui/spinner";
 
 const FormSchema = z.object({
     email: z.email({
@@ -32,16 +36,36 @@ const FormSchema = z.object({
 
 export default function Login() {
     const navigate = useNavigate();
+    const { userId, username, email, setEmail, setUserId, setUsername } = useAuth();
+
+    const [redirectToDashboard, setRedirectToDashboard] = useState(false);
+    const [loading, setLoading] = useState(false);
+
     async function onSubmit(data: z.infer<typeof FormSchema>) {
+        setLoading(true);
         try {
-            const userCredential = await loginUser(data.email, data.password);
-            console.log("Logged in user:", userCredential.user);
-            navigate("/dashboard");
+            const result = await loginUser(data.email, data.password);
+            const { profile } = result;
+
+            setEmail(profile.email);
+            setUsername(profile.username);
+            setUserId(profile.uid);
+
+
+            setRedirectToDashboard(true);
         } catch (error: any) {
-            form.setError("email", { message: "Invalid email or password" });
-            form.setError("password", { message: " " });
+            setLoading(false)
+
+            form.setError("email", { message: "Invalid email" });
+            form.setError("password", { message: "Invalid password" });
         }
     }
+
+    React.useEffect(() => {
+        if (redirectToDashboard && userId && username && email) {
+            navigate("/dashboard");
+        }
+    }, [redirectToDashboard, userId, username, email]);
 
     const form = useForm<z.infer<typeof FormSchema>>({
         resolver: zodResolver(FormSchema),
@@ -66,15 +90,23 @@ export default function Login() {
                                 </div>
                                 <div className="grid gap-2">
                                     <PasswordField control={form.control} Password="password" />
-                                    <a
+                                    {/* <a
                                         href="#"
                                         className="ml-auto inline-block text-sm underline-offset-4 hover:underline"
                                     >
                                         Forgot your password?
-                                    </a>
+                                    </a> */}
                                 </div>
-                                <Button type="submit" className="w-full bg-blue-700 hover:bg-green-500">
-                                    Login
+                                <Button
+                                    type="submit"
+                                    className="w-full bg-blue-700 hover:bg-green-500"
+                                    disabled={loading}
+                                >
+                                    {loading ? (
+                                        <Spinner size="sm" className="dark:bg-white" />
+                                    ) : (
+                                        "Login"
+                                    )}
                                 </Button>
                             </div>
                         </form>

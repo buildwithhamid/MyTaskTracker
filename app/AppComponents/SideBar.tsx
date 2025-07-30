@@ -8,19 +8,29 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
-  useSidebar, // ✅ import hook
+  useSidebar, 
 } from "../components/ui/sidebar";
 import { Link } from "react-router-dom";
+import { useAuth } from "~/ContextFiles/AuthContext";
 
-// Menu items
-const items = [
-  { title: "Dashboard", url: "/dashboard", icon: Home },
-  { title: "Inbox", url: "#", icon: Inbox },
-  { title: "Profile", url: "#", icon: Calendar },
-  { title: "Logout", url: "/login", icon: LogOut },
-];
 
 export function AppSidebar() {
+  const { email, username } = useAuth();
+
+  const isAdmin = email === "task-manager@admn.com";
+
+  const items = isAdmin
+    ? [
+        { title: "Dashboard", url: "/dashboard", icon: Home },
+        { title: "Inbox", url: "#", icon: Inbox },
+        { title: "Profile", url: "#", icon: Settings },
+        { title: "Logout", url: "/login", icon: LogOut },
+      ]
+    : [
+        { title: "Dashboard", url: "/dashboard", icon: Home },
+        { title: "Profile", url: "#", icon: Calendar },
+        { title: "Logout", url: "/login", icon: LogOut },
+      ];
 
   return (
     <Sidebar>
@@ -33,8 +43,8 @@ export function AppSidebar() {
 
                 <div className="flex flex-col justify-center items-center gap-2">
                   <img className="h-25 w-25" src="woman.png" alt="" />
-                  <p className="text-gray-700 ">Kausar Fatima</p>
-                  <p className="text-gray-700 ">kausarfatima1044@gmail.com</p>
+                  <p className="text-gray-700 ">{username}</p>
+                  <p className="text-gray-700 ">{email}</p>
 
                 </div>
 

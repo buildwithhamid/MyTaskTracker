@@ -1,13 +1,5 @@
-// app/routes/_index.tsx
-import { useEffect } from "react";
-import { useNavigate } from "react-router";
+import { Navigate } from "react-router-dom";
 
 export default function IndexPage() {
-  const navigate = useNavigate();
-
-  useEffect(() => {
-    navigate("/login");
-  }, []);
-
-  return null;
+  return <Navigate to="/login"/>;
 }
