@@ -37,18 +37,6 @@ import { useAuth } from "~/ContextFiles/AuthContext"
 import { Timestamp } from "firebase/firestore"
 import { Spinner } from "~/components/ui/spinner"
 
-const globalFilterFn = <TData extends object>(
-  row: Row<TData>,
-  filterValue: string
-) => {
-  const search = filterValue.toLowerCase();
-  const searchableFields = ["title", "category", "status", "priority", "description", "dueDate"];
-  return searchableFields.some((key) => {
-    const value = row.original[key as keyof TData];
-    return String(value).toLowerCase().includes(search);
-  });
-};
-
 export type Task = {
   title: string
   category: string
@@ -101,13 +89,9 @@ export default function UserDashboard() {
   const [loading, setLoading] = useState(true)
 
   const userTasks = useMemo(() => {
-    console.log("Updated taskData from context:", taskData);
 
     return taskData
       .filter((task) => {
-        console.log("task.userId:", task.userId);
-        console.log("Expected userId:", userId);
-        console.log("isPublic:", task.isPublic);
         return task.userId === userId && task.isPublic;
       })
       .map((task) => ({
@@ -132,13 +116,6 @@ export default function UserDashboard() {
     }
   }, [taskData]);
 
-  console.log(userId);
-  console.log(userTasks)
-
-  const [sorting, setSorting] = React.useState<SortingState>([])
-  const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
-    []
-  )
   const [columnVisibility, setColumnVisibility] =
     React.useState<VisibilityState>({})
   const [globalFilter, setGlobalFilter] = React.useState("");
@@ -148,31 +125,28 @@ export default function UserDashboard() {
     columns,
     state: {
       globalFilter,
-      sorting,
-      columnFilters,
       columnVisibility,
     },
     onGlobalFilterChange: setGlobalFilter,
-    onSortingChange: setSorting,
-    onColumnFiltersChange: setColumnFilters,
     onColumnVisibilityChange: setColumnVisibility,
     getCoreRowModel: getCoreRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
-    getSortedRowModel: getSortedRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
-    globalFilterFn: globalFilterFn,
   });
-
 
   return (
     <div className="w-full">
       <div className="flex items-center py-4">
         <Input
-          placeholder="Search tasks..."
+        placeholder="Search..."
           value={globalFilter}
-          onChange={(e) => setGlobalFilter(e.target.value)}
+          onChange={(e) => {
+            setGlobalFilter(e.target.value)
+            console.log("Filtered rows:", table.getFilteredRowModel().rows);
+          }}
           className="max-w-sm"
         />
+
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button variant="outline" className="ml-auto">
