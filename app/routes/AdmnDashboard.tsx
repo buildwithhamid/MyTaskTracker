@@ -1,15 +1,6 @@
 "use client"
 
-import { useRef, useState, useContext, type DragEvent } from "react"
-import { Button } from "~/components/ui/button"
-import { Plus } from "lucide-react"
-import { Dialog, DialogTrigger } from "~/components/ui/dialog"
-import { AddDialog } from "~/AppComponents/AddDialogBox"
-import { TaskContext, type TaskItem } from "~/ContextFiles/TaskContext"
-import { EditDialogBox } from "~/AppComponents/EditDialogBox"
-import { TaskItemCard } from "~/AppComponents/TaskItem"
-import { TaskStatusChart } from "~/AppComponents/TaskStatusChart"
-import TaskStatusPieChart from "~/AppComponents/TaskStatusPieChart"
+import { useRef, useState, useContext, type DragEvent, AddDialog, Plus, Button, Dialog, DialogTrigger, EditDialogBox, TaskContext, TaskItemCard, TaskStatusChart, TaskStatusPieChart, type TaskItem } from "./imports"
 
 export default function AdminDashboard() {
   const taskContext = useContext(TaskContext)

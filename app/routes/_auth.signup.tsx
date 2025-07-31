@@ -1,24 +1,24 @@
 "use client"
 
-import { Button } from "../components/ui/button"
 import {
+  useState,
+  useNavigate,
+  useForm,
+  zodResolver,
+  z,
+  Button,
+  Form,
+  Spinner,
   Card,
   CardContent,
   CardFooter,
   CardHeader,
   CardTitle,
-} from "../components/ui/card"
-import { useNavigate } from "react-router-dom";
-import { zodResolver } from "@hookform/resolvers/zod"
-import { useForm } from "react-hook-form"
-import { z } from "zod"
-import { Form } from "../components/ui/form"
-import EmailField from "~/AppComponents/FormFields/EmailField";
-import PasswordField from "~/AppComponents/FormFields/PasswordField";
-import { useState } from "react";
-import { signupUser } from "~/Services/authService";
-import NameField from "~/AppComponents/FormFields/NameField";
-import { Spinner } from "../components/ui/spinner";
+  EmailField,
+  PasswordField,
+  NameField,
+  signupUser,
+} from "./imports"
 
 const FormSchema = z.object({
   Username: z.string(

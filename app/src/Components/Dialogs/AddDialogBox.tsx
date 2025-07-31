@@ -1,30 +1,27 @@
-import z from "zod";
-import { v4 as uuidv4 } from "uuid";
-import { Button } from "../components/ui/button"
 import {
-  DialogClose,
+  useForm,
+  zodResolver,
+  Button,
   DialogContent,
+  NameField,
+  z,
+  useState,
+  useContext,
+  DialogClose,
   DialogFooter,
   DialogHeader,
   DialogTitle,
-} from "../components/ui/dialog"
-import { useForm } from "react-hook-form";
-import { Form } from "../components/ui/form"
-import { useNavigate } from "react-router-dom";
-import { zodResolver } from "@hookform/resolvers/zod";
-import NameField from "./FormFields/NameField";
-import CategoryField from "./FormFields/CategoryField";
-import DateField from "./FormFields/DateField";
-import AmountField from "./FormFields/AmountField";
-import TextAreaField from "./FormFields/TextAreaField";
-import { Checkbox } from "~/components/ui/checkbox";
-import { Label } from "~/components/ui/label";
-import { useContext, useState } from "react";
-import { TaskContext } from "~/ContextFiles/TaskContext";
-import { useAPIContext } from "~/ContextFiles/UsersContext";
-import { id } from "date-fns/locale";
-import { useAuth } from "~/ContextFiles/AuthContext";
-import { Spinner } from "~/components/ui/spinner";
+  Form,
+  Checkbox,
+  Label,
+  Spinner,
+  CategoryField,
+  DateField,
+  TextAreaField,
+  TaskContext,
+  uuidv4,
+  useAPIContext,
+} from "./imports"
 
 const FormSchema = z.object({
   title: z
@@ -79,19 +76,18 @@ interface AddDialogProps {
 export function AddDialog({ onClose }: AddDialogProps) {
   const taskContext = useContext(TaskContext);
   const { users } = useAPIContext();
-  const { userId } = useAuth();
   const [loading, setLoading] = useState(false);
 
   var categories = ["Personal", "Work", "Learning", "Others"]
   var priorities = ["Low", "High", "Medium"]
   var status = ["Pending", "Completed", "Inprogress"]
-  const usernames: string[] = users.map(user => user.username);
+  const usernames: string[] = users.map((user: { username: string; }) => user.username);
 
 
   function onSubmit(data: z.infer<typeof FormSchema>) {
     const { addTask } = taskContext!;
     setLoading(true);
-    const selectedUser = users.find(user => user.username === data.assignedTo);
+    const selectedUser = users.find((user: { username: string; }) => user.username === data.assignedTo);
 
     if (!selectedUser) {
       setLoading(false)
@@ -106,7 +102,7 @@ export function AddDialog({ onClose }: AddDialogProps) {
     };
 
     addTask(newTask);
-    onClose(); // close modal after adding
+    onClose(); 
   }
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),

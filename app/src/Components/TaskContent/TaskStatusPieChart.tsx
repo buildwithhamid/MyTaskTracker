@@ -1,23 +1,20 @@
 "use client";
 
-import * as React from "react";
-import { TrendingUp } from "lucide-react";
-import { Cell, Pie, PieChart } from "recharts";
 import {
+  Cell,
+  Pie,
+  PieChart,
+  useContext,
+  TaskContext,
   Card,
   CardContent,
   CardDescription,
-  CardFooter,
   CardHeader,
   CardTitle,
-} from '../components/ui/card';
-import {
   ChartContainer,
   ChartTooltip,
   ChartTooltipContent,
-} from '../components/ui/chart';
-import { useContext } from "react";
-import { TaskContext } from "~/ContextFiles/TaskContext";
+} from "./imports"
 
 export default function PriorityPieChart() {
   const taskContext = useContext(TaskContext);
@@ -42,8 +39,6 @@ export default function PriorityPieChart() {
       categoryPriorityMap[task.category].High += 1;
     }
   });
-
-  //   const chartData = Object.values(categoryPriorityMap);
 
   const categoryColors = [
     "var(--color-chart-1)",

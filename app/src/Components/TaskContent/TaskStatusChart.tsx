@@ -1,18 +1,25 @@
 "use client";
 
-import { TrendingUp } from "lucide-react";
-import { Bar, BarChart, CartesianGrid, XAxis } from "recharts";
 import {
+  Bar,
+  BarChart,
+  CartesianGrid,
+  XAxis,
+  useContext,
+  TaskContext,
   Card,
   CardContent,
   CardDescription,
-  CardFooter,
   CardHeader,
   CardTitle,
-} from "../components/ui/card";
-import { useContext } from "react";
-import { TaskContext } from "~/ContextFiles/TaskContext";
-import { ChartContainer, ChartLegend, ChartLegendContent, ChartTooltip, ChartTooltipContent, type ChartConfig } from "~/components/ui/chart";
+  ChartContainer,
+  ChartLegend,
+  ChartLegendContent,
+  ChartTooltip,
+  ChartTooltipContent,
+  type ChartConfig,
+} from "./imports"
+
 
 export function TaskStatusChart() {
   const taskContext = useContext(TaskContext);
@@ -99,14 +106,6 @@ const chartData = Object.values(categoryMap);
           </BarChart>
         </ChartContainer>
       </CardContent>
-      {/* <CardFooter className="flex-col items-start gap-2 text-sm">
-        <div className="flex gap-2 font-medium leading-none">
-          Trending up by 5.2% this month <TrendingUp className="h-4 w-4" />
-        </div>
-        <div className="leading-none text-muted-foreground">
-          Showing total visitors for the last 6 months
-        </div>
-      </CardFooter> */}
     </Card>
   );
 }

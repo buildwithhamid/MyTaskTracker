@@ -1,5 +1,4 @@
-import { Menu } from "lucide-react";
-import { useSidebar } from "~/components/ui/sidebar";
+import { Menu, useSidebar } from "./imports";
 
 export function SidebarToggleButton() {
   const { toggleSidebar } = useSidebar();

@@ -1,25 +1,25 @@
 "use client"
 
-import z from "zod";
-import { Button } from "../components/ui/button"
-import {
-    Card,
-    CardContent,
-    CardFooter,
-    CardHeader,
-    CardTitle,
-} from "../components/ui/card"
-import { useNavigate } from "react-router-dom";
-import { useForm } from "react-hook-form";
-import { Form } from "../components/ui/form"
-import { zodResolver } from "@hookform/resolvers/zod";
-import EmailField from "~/AppComponents/FormFields/EmailField";
-import PasswordField from "~/AppComponents/FormFields/PasswordField";
-import { loginUser } from "~/Services/authService";
-import { useAuth } from "~/ContextFiles/AuthContext";
-import { useState } from "react";
 import React from "react";
-import { Spinner } from "../components/ui/spinner";
+import {
+  useState,
+  useNavigate,
+  useForm,
+  zodResolver,
+  z,
+  Button,
+  Form,
+  Spinner,
+  Card,
+  CardContent,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+  EmailField,
+  PasswordField,
+  useAuth,
+  loginUser,
+} from "./imports"
 
 const FormSchema = z.object({
     email: z.email({
@@ -50,7 +50,6 @@ export default function Login() {
             setEmail(profile.email);
             setUsername(profile.username);
             setUserId(profile.uid);
-
 
             setRedirectToDashboard(true);
         } catch (error: any) {

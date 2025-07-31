@@ -1,24 +1,27 @@
-import z from "zod";
-import { Button } from "../components/ui/button";
 import {
-  DialogClose,
+  useForm,
+  zodResolver,
+  Button,
   DialogContent,
+  NameField,
+  useEffect,
+  z,
+  useState,
+  useContext,
+  DialogClose,
   DialogFooter,
   DialogHeader,
   DialogTitle,
-} from "../components/ui/dialog";
-import { useForm } from "react-hook-form";
-import { Form } from "../components/ui/form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import NameField from "./FormFields/NameField";
-import CategoryField from "./FormFields/CategoryField";
-import DateField from "./FormFields/DateField";
-import TextAreaField from "./FormFields/TextAreaField";
-import { Checkbox } from "~/components/ui/checkbox";
-import { Label } from "~/components/ui/label";
-import { useContext, useEffect, useState } from "react";
-import { TaskContext, type TaskItem} from "~/ContextFiles/TaskContext";
-import { Spinner } from "~/components/ui/spinner";
+  Form,
+  Checkbox,
+  Label,
+  Spinner,
+  CategoryField,
+  DateField,
+  TextAreaField,
+  TaskContext,
+  type TaskItem,
+} from "./imports"
 
 const FormSchema = z.object({
   title: z.string().min(3).max(50),

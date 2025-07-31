@@ -1,18 +1,19 @@
-import { Calendar, Home, Inbox, LogOut, Search, Settings } from "lucide-react";
 import {
   Sidebar,
   SidebarContent,
   SidebarGroup,
   SidebarGroupContent,
-  SidebarGroupLabel,
   SidebarMenu,
-  SidebarMenuButton,
   SidebarMenuItem,
-  useSidebar, 
-} from "../components/ui/sidebar";
-import { Link } from "react-router-dom";
-import { useAuth } from "~/ContextFiles/AuthContext";
-
+  SidebarMenuButton,
+  Calendar,
+  Home,
+  Inbox,
+  LogOut,
+  Settings,
+  Link,
+  useAuth,
+} from "./imports";
 
 export function AppSidebar() {
   const { email, username } = useAuth();

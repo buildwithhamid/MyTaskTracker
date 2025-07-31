@@ -1,41 +1,7 @@
 "use client"
 
-import * as React from "react"
-import {
-  type ColumnDef,
-  type ColumnFiltersState,
-  flexRender,
-  getCoreRowModel,
-  getFilteredRowModel,
-  getPaginationRowModel,
-  getSortedRowModel,
-  type Row,
-  type SortingState,
-  useReactTable,
-  type VisibilityState,
-} from "@tanstack/react-table"
-import { ChevronDown } from "lucide-react"
-import { Button } from "../components/ui/button"
-import {
-  DropdownMenu,
-  DropdownMenuCheckboxItem,
-  DropdownMenuContent,
-  DropdownMenuTrigger,
-} from "../components/ui/dropdown-menu"
-import { Input } from "../components/ui/input"
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "../components/ui/table"
-import { useContext, useMemo, useState } from "react";
-import { TaskContext } from "~/ContextFiles/TaskContext"
-import { useAuth } from "~/ContextFiles/AuthContext"
-import { Timestamp } from "firebase/firestore"
-import { Spinner } from "~/components/ui/spinner"
+import React from "react"
+import { Button, ChevronDown, DropdownMenu, DropdownMenuCheckboxItem, DropdownMenuContent, DropdownMenuTrigger, flexRender, getCoreRowModel, getFilteredRowModel, getPaginationRowModel, Input, Spinner, Table, TableBody, TableCell, TableHead, TableHeader, TableRow, TaskContext, Timestamp, useAuth, useContext, useMemo, useReactTable, useState, type ColumnDef, type VisibilityState } from "./imports"
 
 export type Task = {
   title: string
@@ -138,7 +104,7 @@ export default function UserDashboard() {
     <div className="w-full">
       <div className="flex items-center py-4">
         <Input
-        placeholder="Search..."
+          placeholder="Search..."
           value={globalFilter}
           onChange={(e) => {
             setGlobalFilter(e.target.value)

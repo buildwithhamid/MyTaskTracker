@@ -1,12 +1,19 @@
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "~/components/ui/select";
 import {
   FormControl,
   FormField,
   FormItem,
   FormLabel,
   FormMessage,
-} from "../../components/ui/form"
-import type { Control, FieldValues, Path } from 'react-hook-form';
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+  type Control,
+  type FieldValues,
+  type Path,
+} from "./imports";
+
 
 interface CategoryFieldProps<T extends FieldValues>{
     control: Control<T>

@@ -1,10 +1,12 @@
-import { Pencil, Trash2, ClipboardList } from "lucide-react";
-import { Button } from "../components/ui/button";
 import {
-    Card,
-    CardContent,
-} from "../components/ui/card";
-import type { Timestamp } from "firebase/firestore";
+  Pencil,
+  Trash2,
+  Card,
+  CardContent,
+  type Timestamp,
+  Button,
+} from "./imports"
+
 
 interface TaskCardProps {
     title: string;
@@ -51,10 +53,6 @@ export function TaskItemCard({
         <Card className="w-full">
             <CardContent className="flex flex-col gap-2">
                 <div className="flex items-center gap-4">
-                    {/* Icon Thumbnail
-                    <div className="p-2 bg-gray-100 rounded-full">
-                        <ClipboardList className="h-10 w-10 text-green-600" />
-                    </div> */}
 
                     {/* Task Summary */}
                     <div className="flex flex-col gap-1 flex-1">

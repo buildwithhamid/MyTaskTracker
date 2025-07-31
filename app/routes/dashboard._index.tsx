@@ -1,6 +1,4 @@
-import { useAuth } from "~/ContextFiles/AuthContext";
-import AdminDashboard from "./AdmnDashboard";
-import UserDashboard from "./UserDashboard";
+import { AdminDashboard, useAuth, UserDashboard } from "./imports";
 
 export default function Dashboard() {
   const { email } = useAuth();

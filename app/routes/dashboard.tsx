@@ -1,7 +1,4 @@
-import { SidebarProvider } from "../components/ui/sidebar";
-import { AppSidebar } from "../AppComponents/SideBar";
-import { Outlet } from "react-router";
-import Header from "~/AppComponents/Header";
+import { AppSidebar, Header, Outlet, SidebarProvider } from "./imports";
 
 export default function dashboard() {
   return (
