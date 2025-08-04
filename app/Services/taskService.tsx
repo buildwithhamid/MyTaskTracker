@@ -6,11 +6,15 @@ export interface Task {
     title: string;
     userId: string;
     description: string;
+    showDesc: boolean;
     assignedTo: string;
     category: string;
+    showCategory: boolean;
     dueDate: Date | String | Timestamp;
     priority: string;
+    showPriority: boolean;
     status: string;
+    showStatus: boolean;
     isPublic: boolean;
     createdAt?: string;
 }
@@ -69,6 +73,10 @@ export async function getTasks() {
                 priority: data.priority,
                 status: data.status,
                 isPublic: data.isPublic,
+                showCategory: data.showCategory,
+                showDesc: data.showDesc,
+                showPriority: data.showPriority,
+                showStatus: data.showStatus,
             } as TaskItem;
         })
 

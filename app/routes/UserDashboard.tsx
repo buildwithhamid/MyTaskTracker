@@ -1,15 +1,15 @@
 "use client"
 
 import React from "react"
-import { Button, ChevronDown, DropdownMenu, DropdownMenuCheckboxItem, DropdownMenuContent, DropdownMenuTrigger, flexRender, getCoreRowModel, getFilteredRowModel, getPaginationRowModel, Input, Spinner, Table, TableBody, TableCell, TableHead, TableHeader, TableRow, TaskContext, Timestamp, useAuth, useContext, useMemo, useReactTable, useState, type ColumnDef, type VisibilityState } from "./imports"
+import { Button, ChevronDown, DropdownMenu, DropdownMenuCheckboxItem, DropdownMenuContent, DropdownMenuTrigger, flexRender, getCoreRowModel, getFilteredRowModel, getPaginationRowModel, Input, Spinner, Table, TableBody, TableCell, TableHead, TableHeader, TableRow, TaskContext, Timestamp, useAuth, useContext, useMemo, useReactTable, useState, type ColumnDef, type TaskItem, type VisibilityState } from "./imports"
 
 export type Task = {
   title: string
-  category: string
-  status: string
-  priority: string
+  category: string | null
+  status: string | null
+  priority: string | null
   dueDate: string | Date | Timestamp
-  description: string
+  description: string | null
 }
 
 export const columns: ColumnDef<Task>[] = [
@@ -56,21 +56,24 @@ export default function UserDashboard() {
 
   const userTasks = useMemo(() => {
 
-    const mapToTask = (task: Task): Task => ({
-      title: task.title,
-      category: task.category,
-      status: task.status,
-      priority: task.priority,
-      dueDate:
-        task.dueDate instanceof Date
-          ? task.dueDate.toLocaleDateString()
-          : task.dueDate instanceof Timestamp
-            ? task.dueDate.toDate().toLocaleDateString()
-            : typeof task.dueDate === "string"
-              ? new Date(task.dueDate).toLocaleDateString()
-              : "N/A",
-      description: task.description,
-    })
+    const mapToTask = (task: TaskItem): Task => {
+      console.log("Raw task object from context:", task);
+      return ({
+        title: task.title,
+        category: task.showCategory ? task.category : null,
+        status: task.showStatus ? task.status : null,
+        priority: task.showPriority ? task.priority : null,
+        dueDate:
+          task.dueDate instanceof Date
+            ? task.dueDate.toLocaleDateString()
+            : task.dueDate instanceof Timestamp
+              ? task.dueDate.toDate().toLocaleDateString()
+              : typeof task.dueDate === "string"
+                ? new Date(task.dueDate).toLocaleDateString()
+                : "N/A",
+        description: task.showDesc ? task.description : null,
+      })
+    }
 
     return email === "task-manager@admn.com"
       ? taskData.map(mapToTask)

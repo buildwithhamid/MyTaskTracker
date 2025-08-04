@@ -1,3 +1,4 @@
+import { useTaskFieldContext } from "~/ContextFiles/TaskFieldsContext";
 import {
   useForm,
   zodResolver,
@@ -53,6 +54,28 @@ export function EditDialogBox({ onClose, task }: EditDialogProps) {
   const taskContext = useContext(TaskContext)!;
   const { updateTask } = taskContext;
   const [loading, setLoading] = useState(false);
+  const {
+  setShowDescription,
+  setShowCategory,
+  setShowPriority,
+  setShowStatus,
+  isPublic,
+  setIsPublic,
+  resetFields,
+  showCategory,
+  showDescription,
+  showPriority,
+  showStatus
+} = useTaskFieldContext();
+
+useEffect(() => {
+  setShowDescription(task.showDesc);
+  setShowCategory(task.showCategory);
+  setShowPriority(task.showPriority);
+  setShowStatus(task.showStatus);
+  setIsPublic(task.isPublic);
+}, [task]);
+
 
   const categories = ["Personal", "Work", "Learning", "Others"];
   const priorities = ["Low", "High", "Medium"];
@@ -63,6 +86,7 @@ export function EditDialogBox({ onClose, task }: EditDialogProps) {
     defaultValues: {
       ...task,
       dueDate: toDate(task.dueDate),
+      isPublic: task.isPublic,
     },
   });
 
@@ -74,10 +98,21 @@ export function EditDialogBox({ onClose, task }: EditDialogProps) {
     });
   }, [task]);
 
+
+
   function onSubmit(data: z.infer<typeof FormSchema>) {
     setLoading(true);
+      const updatedTask = {
+    ...data,
+    showDesc: showDescription,
+    showCategory: showCategory,
+    showPriority: showPriority,
+    showStatus: showStatus,
+  };
     console.log(task.id);
-    updateTask(task.id, data);
+    updateTask(task.id, updatedTask, );
+    resetFields;
+    setLoading(false);
     onClose();
   }
 

@@ -13,6 +13,7 @@ import { ThemeProvider } from "./ContextFiles/theme_provider";
 import { APIProvider } from "./ContextFiles/UsersContext";
 import { AuthProvider } from "./ContextFiles/AuthContext";
 import { ViewProvider } from "./ContextFiles/ViewContext";
+import { TaskFieldProvider } from "./ContextFiles/TaskFieldsContext";
 
 export const links: Route.LinksFunction = () => [
   { rel: "preconnect", href: "https://fonts.googleapis.com" },
@@ -48,15 +49,17 @@ export function Layout({ children }: { children: React.ReactNode }) {
 export default function App() {
   return (
     <TaskProvider>
-      <APIProvider>
-        <AuthProvider>
-          <ViewProvider>
-            <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
-              <Outlet />
-            </ThemeProvider>
-          </ViewProvider>
-        </AuthProvider>
-      </APIProvider>
+      <TaskFieldProvider>
+        <APIProvider>
+          <AuthProvider>
+            <ViewProvider>
+              <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
+                <Outlet />
+              </ThemeProvider>
+            </ViewProvider>
+          </AuthProvider>
+        </APIProvider>
+      </TaskFieldProvider>
     </TaskProvider>
   );
 }
