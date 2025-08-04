@@ -6,9 +6,9 @@ import { Button, ChevronDown, DropdownMenu, DropdownMenuCheckboxItem, DropdownMe
 export type Task = {
   title: string
   category: string
-  status: "pending" | "in-progress" | "completed"
-  priority: "low" | "medium" | "high"
-  dueDate: string
+  status: string
+  priority: string
+  dueDate: string | Date | Timestamp
   description: string
 }
 
@@ -51,30 +51,31 @@ export const columns: ColumnDef<Task>[] = [
 
 export default function UserDashboard() {
   const { taskData } = useContext(TaskContext)!;
-  const { userId } = useAuth();
+  const { userId, email } = useAuth();
   const [loading, setLoading] = useState(true)
 
   const userTasks = useMemo(() => {
 
-    return taskData
-      .filter((task) => {
-        return task.userId === userId && task.isPublic;
-      })
-      .map((task) => ({
-        title: task.title,
-        category: task.category,
-        status: task.status as "pending" | "in-progress" | "completed",
-        priority: task.priority as "low" | "medium" | "high",
-        dueDate:
-          task.dueDate instanceof Date
-            ? task.dueDate.toLocaleDateString()
-            : task.dueDate instanceof Timestamp
-              ? task.dueDate.toDate().toLocaleDateString()
-              : typeof task.dueDate === "string"
-                ? new Date(task.dueDate).toLocaleDateString()
-                : "N/A",
-        description: task.description,
-      }));
+    const mapToTask = (task: Task): Task => ({
+      title: task.title,
+      category: task.category,
+      status: task.status,
+      priority: task.priority,
+      dueDate:
+        task.dueDate instanceof Date
+          ? task.dueDate.toLocaleDateString()
+          : task.dueDate instanceof Timestamp
+            ? task.dueDate.toDate().toLocaleDateString()
+            : typeof task.dueDate === "string"
+              ? new Date(task.dueDate).toLocaleDateString()
+              : "N/A",
+      description: task.description,
+    })
+
+    return email === "task-manager@admn.com"
+      ? taskData.map(mapToTask)
+      : taskData.filter(task => task.userId === userId && task.isPublic)
+        .map(mapToTask);
   }, [taskData, userId]);
   React.useEffect(() => {
     if (taskData.length > 0) {

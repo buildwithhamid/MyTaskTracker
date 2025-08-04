@@ -12,6 +12,7 @@ import TaskProvider from "./ContextFiles/TaskContext";
 import { ThemeProvider } from "./ContextFiles/theme_provider";
 import { APIProvider } from "./ContextFiles/UsersContext";
 import { AuthProvider } from "./ContextFiles/AuthContext";
+import { ViewProvider } from "./ContextFiles/ViewContext";
 
 export const links: Route.LinksFunction = () => [
   { rel: "preconnect", href: "https://fonts.googleapis.com" },
@@ -49,10 +50,12 @@ export default function App() {
     <TaskProvider>
       <APIProvider>
         <AuthProvider>
-      <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
-        <Outlet />
-      </ThemeProvider>
-      </AuthProvider>
+          <ViewProvider>
+            <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
+              <Outlet />
+            </ThemeProvider>
+          </ViewProvider>
+        </AuthProvider>
       </APIProvider>
     </TaskProvider>
   );

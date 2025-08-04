@@ -1,9 +1,11 @@
+import { useView } from "~/ContextFiles/ViewContext";
 import { AdminDashboard, useAuth, UserDashboard } from "./imports";
 
 export default function Dashboard() {
   const { email } = useAuth();
+  const { view } = useView()
 
-  if (email === "task-manager@admn.com") {
+  if (email === "task-manager@admn.com" && view==="Admin") {
     return <AdminDashboard />;
   }
 

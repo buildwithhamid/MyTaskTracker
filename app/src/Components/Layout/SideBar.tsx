@@ -1,3 +1,4 @@
+import { useView } from "~/ContextFiles/ViewContext";
 import {
   Sidebar,
   SidebarContent,
@@ -17,10 +18,11 @@ import {
 
 export function AppSidebar() {
   const { email, username } = useAuth();
+  const { view } = useView();
 
   const isAdmin = email === "task-manager@admn.com";
 
-  const items = isAdmin
+  const items = (isAdmin && view==="Admin")
     ? [
         { title: "Dashboard", url: "/dashboard", icon: Home },
         { title: "Inbox", url: "#", icon: Inbox },

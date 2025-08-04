@@ -1,6 +1,8 @@
-import { ModeToggle, SidebarToggleButton } from "./imports";
+import { DropdownToggle } from "./DropDownToggle";
+import { ModeToggle, SidebarToggleButton, useAuth } from "./imports";
 
 export default function Header() {
+  const {email} = useAuth();
   return (
     <header className="p-4 flex items-center justify-between border-b">
       <SidebarToggleButton />
@@ -8,7 +10,11 @@ export default function Header() {
         <img className="h-12 w-12" src="/expense.png" alt="" />
         <h1 className="text-2xl font-semibold">Tasks Manager</h1>
       </div>
-      <ModeToggle />
+      <div className="flex items-center gap-4">
+        {email === "task-manager@admn.com" &&
+        <DropdownToggle />}
+        <ModeToggle />
+      </div>
     </header>
   );
 }
