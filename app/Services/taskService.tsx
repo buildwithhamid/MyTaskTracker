@@ -1,0 +1,80 @@
+import { collection, addDoc, getDocs, Timestamp, doc, updateDoc, deleteDoc, setDoc } from "firebase/firestore";
+import { db } from "../firebase";
+import type { TaskItem } from "~/ContextFiles/TaskContext";
+
+export interface Task {
+    title: string;
+    userId: string;
+    description: string;
+    assignedTo: string;
+    category: string;
+    dueDate: Date | String | Timestamp;
+    priority: string;
+    status: string;
+    isPublic: boolean;
+    createdAt?: string;
+}
+
+export async function createTask(task: TaskItem) {
+    try {
+        const docRef = doc(db, "tasks", task.id); // manually specify ID
+        await setDoc(docRef, {
+            ...task,
+            createdAt: new Date().toISOString(),
+        });
+        return task; // your ID is already in it
+    } catch (error: any) {
+        console.error("Error creating task:", error.message);
+        throw new Error(error.message);
+    }
+}
+
+export async function updatetask(taskId: string, updatedTask: Partial<Task>) {
+    try {
+        const taskRef = doc(db, "tasks", taskId);
+        await updateDoc(taskRef, {
+            ...updatedTask,
+        });
+    } catch (error: any) {
+        console.error("Error updating task:", error.message);
+        throw new Error(error.message);
+    }
+}
+
+export async function deleteTask(taskId: string) {
+    try {
+        const taskRef = doc(db, "tasks", taskId);
+        await deleteDoc(taskRef);
+    } catch (error: any) {
+        console.error("Error deleting task:", error.message);
+        throw new Error(error.message);
+    }
+}
+
+export async function getTasks() {
+    try {
+        const snapshot = await getDocs(collection(db, "tasks"));
+        const tasks = snapshot.docs.map(doc => {
+            const data = doc.data();
+            console.log(" data extracted from firebase, ", { data })
+
+            return {
+                id: doc.id,
+                userId: data.userId,
+                title: data.title,
+                description: data.description,
+                assignedTo: data.assignedTo,
+                category: data.category,
+                dueDate: data.dueDate,
+                priority: data.priority,
+                status: data.status,
+                isPublic: data.isPublic,
+            } as TaskItem;
+        })
+
+        return tasks;
+    } catch (error: any) {
+        console.error("Error fetching tasks:", error.message);
+        throw new Error(error.message);
+    }
+}
