@@ -7,11 +7,15 @@ export interface TaskItem {
     userId: string;
     title: string;
     description: string;
+    showDesc: boolean,
     assignedTo: string;
     category: string;
+    showCategory: boolean,
     dueDate: Date | string | Timestamp;
     priority: string;
+    showPriority: boolean,
     status: string;
+    showStatus: boolean,
     isPublic: boolean;
 }
 
@@ -43,6 +47,12 @@ const TaskProvider: React.FC<TaskProviderProps> = ({ children }) => {
         }
         loadTasks();
     }, []);
+
+    useEffect(() => {
+        if (taskData.length > 0) {
+            console.log("Updated taskData with flags:", taskData);
+        }
+    }, [taskData]);
 
     const addTask = async (task: TaskItem) => {
         try {

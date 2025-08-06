@@ -1,3 +1,4 @@
+import { useTaskFieldContext } from "~/ContextFiles/TaskFieldsContext";
 import {
   useForm,
   zodResolver,
@@ -63,10 +64,6 @@ const FormSchema = z.object({
     .string({
       message: "Status is required",
     }),
-
-  isPublic: z
-    .boolean(),
-
 });
 
 interface AddDialogProps {
@@ -77,6 +74,9 @@ export function AddDialog({ onClose }: AddDialogProps) {
   const taskContext = useContext(TaskContext);
   const { users } = useAPIContext();
   const [loading, setLoading] = useState(false);
+  const {
+        showDescription, showCategory, showPriority, showStatus,isPublic,setIsPublic, resetFields
+      } = useTaskFieldContext();
 
   var categories = ["Personal", "Work", "Learning", "Others"]
   var priorities = ["Low", "High", "Medium"]
@@ -98,10 +98,16 @@ export function AddDialog({ onClose }: AddDialogProps) {
     const newTask = {
       userId: selectedUser.uid,
       id: uuidv4(),
+      showCategory: showCategory,
+      showDesc: showDescription,
+      showPriority: showPriority,
+      showStatus: showStatus,
+      isPublic: isPublic,
       ...data,
     };
 
     addTask(newTask);
+    resetFields;
     onClose(); 
   }
   const form = useForm<z.infer<typeof FormSchema>>({
@@ -114,7 +120,6 @@ export function AddDialog({ onClose }: AddDialogProps) {
       priority: "",
       status: "",
       category: "",
-      isPublic: true,
     },
   })
 
@@ -141,7 +146,7 @@ export function AddDialog({ onClose }: AddDialogProps) {
               {/* <AmountField control={form.control} amount="amount" /> */}
               <DateField control={form.control} date="dueDate" />
               <div className="flex gap-2">
-                <Checkbox id="terms" />
+                <Checkbox id="terms" checked={isPublic} onCheckedChange={setIsPublic}/>
                 <Label htmlFor="terms">Task should be public</Label>
               </div>
 
