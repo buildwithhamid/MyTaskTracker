@@ -70,6 +70,7 @@ export async function getCurrentUser(){
 export async function logoutUser() {
   try {
     await signOut(auth);
+    localStorage.clear();
   } catch (error: any) {
     console.error("Logout error:", error.message);
     throw new Error(error.message);

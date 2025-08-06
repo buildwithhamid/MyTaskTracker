@@ -4,6 +4,7 @@ interface AuthContextType {
   userId: string | null;
   username: string | null;
   email: string | null;
+  loading: boolean;
   setUserId: (id: string) => void;
   setUsername: (name: string) => void;
   setEmail: (email: string) => void;
@@ -13,6 +14,7 @@ const AuthContext = createContext<AuthContextType>({
   userId: null,
   username: null,
   email: null,
+  loading: false,
   setUserId: () => {},
   setUsername: () => {},
   setEmail: () => {},
@@ -22,8 +24,8 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [userId, setUserIdState] = useState<string | null>(null);
   const [username, setUsernameState] = useState<string | null>(null);
   const [email, setEmailState] = useState<string | null>(null);
+  const [loading, setLoading] = useState(true); // new
 
-  // Read from localStorage on mount
   useEffect(() => {
     const storedId = localStorage.getItem("userId");
     const storedUsername = localStorage.getItem("username");
@@ -32,9 +34,10 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     if (storedId) setUserIdState(storedId);
     if (storedUsername) setUsernameState(storedUsername);
     if (storedEmail) setEmailState(storedEmail);
+
+    setLoading(false); // once done
   }, []);
 
-  // Setters + localStorage
   const setUserId = (id: string) => {
     setUserIdState(id);
     localStorage.setItem("userId", id);
@@ -52,11 +55,12 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
   return (
     <AuthContext.Provider
-      value={{ userId, username, email, setUserId, setUsername, setEmail }}
+      value={{ userId, username, email, loading, setUserId, setUsername, setEmail }}
     >
       {children}
     </AuthContext.Provider>
   );
 };
+
 
 export const useAuth = () => useContext(AuthContext);
